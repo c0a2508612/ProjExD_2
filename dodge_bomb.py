@@ -1,5 +1,3 @@
-from tkinter import W
-from asyncio import ReadTransport
 import os
 import sys
 import pygame as pg
