@@ -1,3 +1,5 @@
+from tkinter import W
+from asyncio import ReadTransport
 import os
 import sys
 import pygame as pg
@@ -7,6 +9,37 @@ import random
 WIDTH, HEIGHT = 1100, 650
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
+    """入力されたRectの座標をチェックして、画面外であればTrue、画面内ではFalseを返す。
+
+    Args:
+        rct (pg.Rect): 対象のRect
+
+    Returns:
+        tuple[bool, bool]: 0番要素はX軸が画面外であればTrue, 画面内はFalse 1番要素はY軸が画面外であればTrue, 画面内はFalse
+    """
+    yoko, tate = False, False
+    if rct.left < 0 or rct.right > WIDTH:
+        yoko = True
+    if rct.top < 0 or rct.bottom > HEIGHT:
+        tate = True
+    
+    return yoko, tate
+
+def move_bound(rct: pg.Rect):
+    """入力されたRectの座標をチェックして、画面外であれば移動をブロックする。(独自実装)
+
+    Args:
+        rct (pg.Rect): 対象のRect
+    """
+    if rct.top < 0:
+        rct.top = 0
+    if rct.bottom > HEIGHT:
+        rct.bottom = HEIGHT
+    if rct.left < 0:
+        rct.left = 0
+    if rct.right > WIDTH:
+        rct.right = WIDTH
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -48,9 +81,19 @@ def main():
                 sum_mv[1] += mv[1]
 
         kk_rct.move_ip(sum_mv)
+        # この方法だとX,Y軸どちらかが衝突した場合に、衝突していない片方の軸の移動ができなくなる
+        if check_bound(kk_rct) != (False, False):
+             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
+        
+        # move_bound(kk_rct)
         screen.blit(kk_img, kk_rct)
         # 爆弾をうごかす
         bb_rct.move_ip(vx, vy)
+        yoko, tate = check_bound(bb_rct)
+        if yoko:
+            vx *= -1
+        if tate:
+            vy *= -1
         screen.blit(bb_img, bb_rct)
         pg.display.update()
         tmr += 1
