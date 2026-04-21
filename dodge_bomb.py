@@ -46,6 +46,11 @@ def move_bound(rct: pg.Rect) -> None:
 
 
 def show_gameover(screen: pg.Surface) -> None:
+    """ゲームオーバーSurfaceを引数のSurfaceに表示する。
+
+    Args:
+        screen (pg.Surface): 表示したいSurface
+    """
     # ゲームオーバーのスクリーンを定義
     gameover_screen = pg.Surface((WIDTH, HEIGHT))
     # 背景を設定
@@ -87,6 +92,12 @@ def show_gameover(screen: pg.Surface) -> None:
 
     return None
 
+def get_kk_imgs():
+    kk_dict = {
+        (0, 0): pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9),
+        (1, 0): pg.transform.rotozoom(pg.image.load("fig/3.png"), 0, 0.9),
+    }
+    
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
